@@ -66,6 +66,13 @@ function create_env_file() {
         DB_NAME=$(get_config_value '.database.name')
         POSTGRES_PASSWORD=$(get_config_value '.database.superuser.password')
 
+        # Check if variables are empty
+        if [[ -z "$DB_USER" || -z "$DB_PASSWORD" || -z "$DB_NAME" || -z "$POSTGRES_PASSWORD" ]]; then
+            echo "Error: Missing values in config.json. Please check the configuration."
+            exit 1
+        fi
+
+        # Create the .env file
         cat <<EOL > .env
 DB_USER=${DB_USER}
 DB_PASSWORD=${DB_PASSWORD}
@@ -78,10 +85,12 @@ EOL
     fi
 }
 
-# Function to clean up existing containers and volumes
-function clean_up_containers_and_volumes() {
+# Function to clean up everything (containers, images, volumes)
+function clean_up_everything() {
     echo "Stopping and removing all containers..."
     sudo docker-compose down --remove-orphans
+    echo "Removing all Docker images..."
+    sudo docker rmi -f $(docker images -q) || echo "No images to remove."
     echo "Removing all Docker volumes..."
     sudo docker volume prune -f
     echo "Cleanup complete."
@@ -90,7 +99,7 @@ function clean_up_containers_and_volumes() {
 # Function to deploy CoreDef containers
 function deploy_coredef() {
     echo "Building and starting CoreDef containers..."
-    sudo docker-compose up --build -d
+    sudo docker-compose up --build --force-recreate -d
     echo "Containers deployed successfully."
 }
 
@@ -101,10 +110,10 @@ check_and_install_software
 echo "Setting up environment variables..."
 create_env_file
 
-echo "Cleaning up existing containers and volumes..."
-clean_up_containers_and_volumes
+echo "Cleaning up everything (containers, images, and volumes)..."
+clean_up_everything
 
-echo "Deploying CoreDef containers..."
+echo "Deploying CoreDef containers from scratch..."
 deploy_coredef
 
 echo "CoreDef setup complete. Access the control center at http://localhost:5000"
