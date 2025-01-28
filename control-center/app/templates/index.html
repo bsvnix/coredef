@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreDef Control Center</title>
+</head>
+<body>
+    <h1>CoreDef Control Center</h1>
 
+    <!-- Decoy Events Block -->
+    <h2>Recent Decoy Events</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Attacker IP</th>
+                <th>Port</th>
+                <th>Detected At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ip, port, detected_at in decoy_data %}
+            <tr>
+                <td>{{ ip }}</td>
+                <td>{{ port }}</td>
+                <td>{{ detected_at }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">No data available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Scanner Results Block -->
+    <h2>Recent Scanned IPs</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>IP</th>
+                <th>Scanned At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ip, scanned_at in scanner_ips %}
+            <tr>
+                <td><a href="/scanner/{{ ip }}">{{ ip }}</a></td>
+                <td>{{ scanned_at }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">No data available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
