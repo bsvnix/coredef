@@ -6,17 +6,17 @@ import json
 # Flask application
 app = Flask(__name__)
 
-# Load configuration
+# Load configuration from centralized config file
 config_path = os.getenv("CONFIG_PATH", "./config.json")
-with open(config_path, 'r') as f:
+with open(config_path, "r") as f:
     config = json.load(f)
 
-db_config = config['database']
-DB_HOST = db_config['host']
-DB_PORT = db_config['port']
-DB_NAME = db_config['name']
-DB_USER = db_config['users']['control']['user']
-DB_PASSWORD = db_config['users']['control']['password']
+db_config = config["database"]
+DB_HOST = db_config["host"]
+DB_PORT = db_config["port"]
+DB_NAME = db_config["name"]
+DB_USER = db_config["users"]["control"]["user"]
+DB_PASSWORD = db_config["users"]["control"]["password"]
 
 
 def get_db_connection():
