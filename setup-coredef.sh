@@ -57,16 +57,15 @@ function check_and_install_software() {
     install_docker_compose
 }
 
+# Function to create the .env file from config.json
 function create_env_file() {
     echo "Creating .env file from config.json..."
     if [ ! -f .env ]; then
-        # Extract values from config.json
         DB_USER=$(get_config_value '.database.users.control.user')
         DB_PASSWORD=$(get_config_value '.database.users.control.password')
         DB_NAME=$(get_config_value '.database.name')
-        POSTGRES_PASSWORD=$(get_config_value '.database.users.control.password')  # Use control password as superuser password
+        POSTGRES_PASSWORD=$(get_config_value '.database.superuser.password')
 
-        # Create the .env file
         cat <<EOL > .env
 DB_USER=${DB_USER}
 DB_PASSWORD=${DB_PASSWORD}
@@ -79,15 +78,18 @@ EOL
     fi
 }
 
+# Function to clean up existing containers and volumes
+function clean_up_containers_and_volumes() {
+    echo "Stopping and removing all containers..."
+    sudo docker-compose down --remove-orphans
+    echo "Removing all Docker volumes..."
+    sudo docker volume prune -f
+    echo "Cleanup complete."
+}
+
 # Function to deploy CoreDef containers
 function deploy_coredef() {
-    echo "Starting deployment of CoreDef containers..."
-    # Ensure Docker is running
-    sudo systemctl start docker
-
-    # Build and start containers using Docker Compose
-    echo "Building and starting containers..."
-    sudo docker-compose down --remove-orphans
+    echo "Building and starting CoreDef containers..."
     sudo docker-compose up --build -d
     echo "Containers deployed successfully."
 }
@@ -99,7 +101,10 @@ check_and_install_software
 echo "Setting up environment variables..."
 create_env_file
 
-echo "Setting up CoreDef containers..."
+echo "Cleaning up existing containers and volumes..."
+clean_up_containers_and_volumes
+
+echo "Deploying CoreDef containers..."
 deploy_coredef
 
 echo "CoreDef setup complete. Access the control center at http://localhost:5000"
