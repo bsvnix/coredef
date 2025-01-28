@@ -1,16 +1,25 @@
 from flask import Flask, request
 import psycopg2
+import json
 import os
 
 # Flask application
 app = Flask(__name__)
 
 # Load database configuration
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_USER = os.getenv("DB_USER", "decoy_user")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "decoy_password")
-DB_NAME = os.getenv("DB_NAME", "coredef")
+config_path = os.getenv("CONFIG_PATH", "./config.json")
+with open(config_path, "r") as f:
+    config = json.load(f)
+
+db_config = config["database"]
+DB_HOST = db_config["host"]
+DB_PORT = db_config["port"]
+DB_NAME = db_config["name"]
+DB_USER = db_config["users"]["decoy"]["user"]
+DB_PASSWORD = db_config["users"]["decoy"]["password"]
+
+decoy_config = config["decoy"]
+DEC_PORTS = decoy_config["ports"]
 
 
 def log_to_db(ip, port, service):
