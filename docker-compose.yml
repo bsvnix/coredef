@@ -1,57 +1,63 @@
 version: "3.9"
 
 services:
+  db:
+    image: postgres:15
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./global-config/db-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - coredef-network
+
   control-center:
     build:
       context: ./control-center
     ports:
       - "5000:5000"
     volumes:
-      - ./global-config:/config
-      - ./logs:/logs
+      - ./global-config:/config:ro
+    environment:
+      CONFIG_PATH: /config/config.json
     depends_on:
       - db
-      - vulnerability-scanner
-      - decoy-system
     networks:
-      - shared-network
+      - coredef-network
 
   vulnerability-scanner:
     build:
       context: ./vulnerability-scanner
     volumes:
-      - ./global-config:/config
-      - ./logs:/logs
+      - ./global-config:/config:ro
+    environment:
+      CONFIG_PATH: /config/config.json
     depends_on:
       - db
     networks:
-      - shared-network
+      - coredef-network
 
   decoy-system:
     build:
       context: ./decoy-system
+    ports:
+      - "80:80"
+      - "445:445"
     volumes:
-      - ./global-config:/config
-      - ./logs:/logs
-    networks:
-      - shared-network
-
-  db:
-    image: postgres:15
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./global-config/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql:ro
-      - ./global-config:/config:ro  # Mount the global config directory
+      - ./global-config:/config:ro
+      - ./decoy-system/public:/app/public  # SMB share
     environment:
-      POSTGRES_USER: $(jq -r '.database.users.control.user' /config/config.json)
-      POSTGRES_PASSWORD: $(jq -r '.database.users.control.password' /config/config.json)
-      POSTGRES_DB: $(jq -r '.database.name' /config/config.json)
+      CONFIG_PATH: /config/config.json
+    depends_on:
+      - db
     networks:
-      - shared-network
+      - coredef-network
 
 volumes:
   db_data:
 
 networks:
-  shared-network:
+  coredef-network:
     driver: bridge
