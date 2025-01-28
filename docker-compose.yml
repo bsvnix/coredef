@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  control-center:
+    build:
+      context: ./control-center
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./global-config:/config
+      - ./logs:/logs
+    depends_on:
+      - db
+      - vulnerability-scanner
+      - decoy-system
+    networks:
+      - shared-network
+
+  vulnerability-scanner:
+    build:
+      context: ./vulnerability-scanner
+    volumes:
+      - ./global-config:/config
+      - ./logs:/logs
+    depends_on:
+      - db
+    networks:
+      - shared-network
+
+  decoy-system:
+    build:
+      context: ./decoy-system
+    volumes:
+      - ./global-config:/config
+      - ./logs:/logs
+    networks:
+      - shared-network
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_DB: cybersecurity
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./global-config/db-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - shared-network
+
+volumes:
+  db_data:
+
+networks:
+  shared-network:
+    driver: bridge
