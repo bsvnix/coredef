@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreDef Scanner Details</title>
+</head>
+<body>
+    <h1>Scan Details for {{ ip }}</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>IP</th>
+                <th>System</th>
+                <th>Vulnerabilities</th>
+                <th>Scanned At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ip, system, vulnerabilities, scanned_at in results %}
+            <tr>
+                <td>{{ ip }}</td>
+                <td>{{ system }}</td>
+                <td>
+                    <ul>
+                        {% for vuln in vulnerabilities %}
+                        <li>{{ vuln }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ scanned_at }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No data available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="/">Back to Dashboard</a>
+</body>
+</html>
