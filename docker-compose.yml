@@ -38,13 +38,14 @@ services:
 
   db:
     image: postgres:15
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: securepassword
-      POSTGRES_DB: cybersecurity
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./global-config/db-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./global-config/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql:ro
+      - ./global-config:/config:ro  # Mount the global config directory
+    environment:
+      POSTGRES_USER: $(jq -r '.database.users.control.user' /config/config.json)
+      POSTGRES_PASSWORD: $(jq -r '.database.users.control.password' /config/config.json)
+      POSTGRES_DB: $(jq -r '.database.name' /config/config.json)
     networks:
       - shared-network
 
