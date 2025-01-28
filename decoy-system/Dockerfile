@@ -1,10 +1,10 @@
-# Base image with Python and system utilities
+# Base image with Python
 FROM python:3.9-slim
 
-# Install necessary system packages
+# Install system dependencies for Python and psycopg2
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    samba \
-    python3-pip \
+    gcc \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
@@ -20,5 +20,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 80
 EXPOSE 445
 
-# Start both services (web server and Samba) with the main decoy script
+# Run the decoy app
 CMD ["python", "decoy.py"]
