@@ -1,1 +1,1 @@
-# coredef
+CoreDef is an all-in-one cybersecurity solution designed for SMBs, combining powerful tools into a single deployment. It includes a vulnerability scanner to identify risks, a decoy system to detect intrusions, and a control center with a web UI for centralized management and analytics. All components operate in isolated containers, sharing data securely via a unified database, ensuring simplicity, scalability, and strong security principles.
