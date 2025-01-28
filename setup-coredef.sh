@@ -57,18 +57,21 @@ function check_and_install_software() {
     install_docker_compose
 }
 
-# Function to create the .env file from config.json
 function create_env_file() {
     echo "Creating .env file from config.json..."
     if [ ! -f .env ]; then
+        # Extract values from config.json
         DB_USER=$(get_config_value '.database.users.control.user')
         DB_PASSWORD=$(get_config_value '.database.users.control.password')
         DB_NAME=$(get_config_value '.database.name')
+        POSTGRES_PASSWORD=$(get_config_value '.database.users.control.password')  # Use control password as superuser password
 
+        # Create the .env file
         cat <<EOL > .env
 DB_USER=${DB_USER}
 DB_PASSWORD=${DB_PASSWORD}
 DB_NAME=${DB_NAME}
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 EOL
         echo ".env file created successfully."
     else
