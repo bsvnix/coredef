@@ -1,1 +1,39 @@
+{
+  "_comment_database": "Database configuration for all services.",
+  "database": {
+    "host": "db",                    // Hostname of the database container
+    "port": 5432,                    // PostgreSQL port
+    "name": "coredef",               // Database name
+    "users": {
+      "scanner": {
+        "user": "scanner_user",      // Database username for the vulnerability scanner
+        "password": "scanner_password" // Password for the scanner user
+      },
+      "decoy": {
+        "user": "decoy_user",        // Database username for the decoy system
+        "password": "decoy_password" // Password for the decoy user
+      },
+      "control": {
+        "user": "control_user",      // Database username for the control center
+        "password": "control_password" // Password for the control center user
+      }
+    }
+  },
 
+  "_comment_scanning": "Configuration for the vulnerability scanner.",
+  "scanning": {
+    "subnets": [
+      "192.168.1.0/24",              // Subnet to scan for vulnerabilities
+      "10.0.0.0/24"                  // Add more subnets as needed
+    ]
+  },
+
+  "_comment_decoy": "Configuration for the decoy system.",
+  "decoy": {
+    "ports": [
+      80,                            // HTTP port for the decoy web server
+      445                            // SMB port for the decoy share
+    ],
+    "smb_path": "/app/public"        // Path to the SMB share directory
+  }
+}
