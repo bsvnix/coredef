@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS decoy_events (
     id SERIAL PRIMARY KEY,
     attacker_ip TEXT NOT NULL,
     port INTEGER NOT NULL,
+    service TEXT NOT NULL,
     detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
