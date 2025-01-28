@@ -1,28 +1,33 @@
 {
   "database": {
-    "host": "db",
-    "port": 5432,
-    "name": "coredef",
+    "host": "db",                     // Hostname of the database container
+    "port": 5432,                     // PostgreSQL port
+    "name": "coredef",                // Database name
     "users": {
       "scanner": {
-        "user": "scanner_user",
-        "password": "scanner_password"
+        "user": "scanner_user",       // Username for the vulnerability scanner
+        "password": "1Q2w3e4r#" // Password for the vulnerability scanner
       },
       "decoy": {
-        "user": "decoy_user",
-        "password": "decoy_password"
+        "user": "decoy_user",         // Username for the decoy system
+        "password": "1Q2w3e4r#"  // Password for the decoy system
       },
       "control": {
-        "user": "control_user",
-        "password": "control_password"
+        "user": "control_user",       // Username for the control center
+        "password": "1Q2w3e4r#" // Password for the control center
       }
+    },
+    "superuser": {
+      "password": "1Q2w3e4r#" // PostgreSQL superuser password (POSTGRES_PASSWORD)
     }
   },
   "scanning": {
-    "subnets": ["192.168.1.0/24", "10.0.0.0/24"]
+    "subnets": [
+      "10.26.166.0/24"                  // Additional subnet
+    ]
   },
   "decoy": {
-    "ports": [80, 445],
-    "smb_path": "/app/public"
+    "ports": [80, 445],               // Open ports for the decoy system
+    "smb_path": "/app/public"         // Path for the SMB share
   }
 }
