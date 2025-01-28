@@ -1,38 +1,28 @@
 {
-  "_comment_database": "Database configuration for all services.",
   "database": {
-    "host": "db",                    // Hostname of the database container
-    "port": 5432,                    // PostgreSQL port
-    "name": "coredef",               // Database name
+    "host": "db",
+    "port": 5432,
+    "name": "coredef",
     "users": {
       "scanner": {
-        "user": "scanner_user",      // Database username for the vulnerability scanner
-        "password": "scanner_password" // Password for the scanner user
+        "user": "scanner_user",
+        "password": "scanner_password"
       },
       "decoy": {
-        "user": "decoy_user",        // Database username for the decoy system
-        "password": "decoy_password" // Password for the decoy user
+        "user": "decoy_user",
+        "password": "decoy_password"
       },
       "control": {
-        "user": "control_user",      // Database username for the control center
-        "password": "control_password" // Password for the control center user
+        "user": "control_user",
+        "password": "control_password"
       }
     }
   },
-
-  "_comment_scanning": "Configuration for the vulnerability scanner.",
   "scanning": {
-    "subnets": [
-      "10.26.166.0/24"                  // Add more subnets as needed
-    ]
+    "subnets": ["192.168.1.0/24", "10.0.0.0/24"]
   },
-
-  "_comment_decoy": "Configuration for the decoy system.",
   "decoy": {
-    "ports": [
-      80,                            // HTTP port for the decoy web server
-      445                            // SMB port for the decoy share
-    ],
-    "smb_path": "/app/public"        // Path to the SMB share directory
+    "ports": [80, 445],
+    "smb_path": "/app/public"
   }
 }
